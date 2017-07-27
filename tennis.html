@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Pong</title>
+  </head>
+  <body>
+    <canvas id = 'gameCanvas' width="800" height="600"></canvas>
+    <script>
+
+      var canvas;
+      var canvasContext;
+      var centerX  = 75, centerY  = 75;
+      var ballSpeedX = 6;
+      var ballSpeedY = 6;
+      var paddle1Y;
+
+      const PADDLE_HEIGHT = 100;
+
+      window.onload = function() {
+
+        canvas = document.getElementById('gameCanvas');
+        canvasContext = canvas.getContext('2d');
+
+        //Set up function calls and frame speed
+        var framesPerSecond = 30;
+        setInterval(function() {
+          drawEverything();
+          moveEverything();
+        }, 1000/framesPerSecond);
+
+        canvas.addEventListener('mousemove', function(evt) {
+          var mousePos = calculateMousePos(evt);
+          paddle1Y = mousePos.y - (PADDLE_HEIGHT/2);
+        });
+      }
+
+      function colorRect(topLeftX, topLeftY, boxWidth, boxHeight, fillColor){
+        canvasContext.fillStyle = fillColor;
+        canvasContext.fillRect(topLeftX, topLeftY, boxWidth, boxHeight);
+      }
+
+      function colorCirc(centerX, centerY, radius, fillColor){
+        canvasContext.fillStyle = fillColor;
+        canvasContext.beginPath();
+        canvasContext.arc(centerX, centerY, radius, 0, Math.PI*2, true);
+        canvasContext.fill();
+
+      }
+
+      function drawEverything() {
+
+        //Draw play field
+        colorRect(0, 0, canvas.width, canvas.height, 'black');
+
+        //Draw player paddle
+        colorRect(0, 250, 10, PADDLE_HEIGHT, 'white');
+
+        //Draw ball
+        colorCirc(centerX, centerY, 10, 'white');
+      }
+
+      //Move ball
+      function moveEverything() {
+        if(centerX > canvas.width) {
+          ballSpeedX *= -1;
+        }
+
+        if (centerX < 0) {
+          ballSpeedX *= -1;
+        }
+
+        if(centerY < 0) {
+          ballSpeedY *= -1;
+        }
+
+        if (centerY  > canvas.height){
+          ballSpeedY *= -1;
+        }
+        centerX  += ballSpeedX;
+        centerY  += ballSpeedY;
+
+      }
+
+      function calculateMousePos(evt) {
+        var rect = canvas.getBoundingClientRect(), root = document.documentElement;
+
+        var mouseX = evt.clientX - rect.left - root.scrollLef;
+        var mouseY = evt.clientY - rect.top - root.scrollTop;
+        return {
+          x: mouseX,
+          y: mouseY
+        };
+      }
+    </script>
+  </body>
+</html>
